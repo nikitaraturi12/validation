@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+<meta charset="utf-8" />
+
+<title>Bar representation</title>
+
+
+
+<link href="https://fonts.googleapis.com/css?family=Kaushan+Script" rel="stylesheet">  
+<link rel="stylesheet" href="CSS/AboutCharts.css">
+
+<body>
+
+
+<div id="oilseeds">
+<h1>Oilseed Crop Type vs Production in Descending Order </h1>
+<script src="http://d3js.org/d3.v3.min.js"></script>  
+  <script>
+
+
+
+// set the dimensions of the canvas
+
+var margin = {top: 100, right: 25, bottom: 70, left: 40},
+    width = 1800 - margin.left - margin.right,
+    height = 700 - margin.top - margin.bottom;
+
+
+
+// set the ranges
+var x = d3.scale.ordinal().rangeRoundBands([0, width], 0.5);
+
+var y = d3.scale.linear().range([height, 0]);
+
+// define the axis
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom")
+
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left")
+    .ticks(10);
+
+
+// add the SVG element
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", 
+          "translate(" + margin.left + "," + margin.top + ")");
+
+
+// load the data
+d3.json("output/OilseedsVsProduction.json", function(error, data) {
+
+  data.sort(function(a,b)
+  {
+  return b.value-a.value;
+  });
+  data.forEach(function(d) {
+    d.Particulars = d.Particulars;
+    d.value = +d.value;       // try removing the + and see what the console prints
+    console.log(d.value);   // use console.log to confirm
+  });
+  // scale the range of the data
+  x.domain(data.map(function(d) { return d.Particulars; }));
+  y.domain([0, d3.max(data, function(d) { return d.value; })]);
+
+  // add axis
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+    .selectAll("text")
+      .style("text-anchor", "end")
+      .attr("dx", "-.8em")
+      .attr("dy", "-.55em")
+      .attr("transform", "rotate(-90)" );
+       
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 5)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("value");
+
+
+  // Add bar chart
+  svg.selectAll("bar")
+      .data(data)
+    .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", function(d) { return x(d.Particulars); })
+      .attr("width", x.rangeBand())
+      .attr("y", function(d) { return y(d.value); })
+      .attr("height", function(d) { return height - y(d.value); });
+
+
+      svg.selectAll("text.bar")
+  .data(data)
+.enter().append("text")
+  .attr("class", "bar")
+  .attr("text-anchor", "middle")
+  .attr("x", function(d) { return x(d.Particulars); })
+  .attr("y", function(d) { return y(d.value) - 10; })
+  .text(function(d) { return d.value; });
+
+});
+</script>
+</div>
+
+
+
+<div id="Foodgrains">
+<h1>Foodgrains in Descending Order </h1>
+<script src="http://d3js.org/d3.v3.min.js"></script>  
+  
+
+
+<script>
+
+
+
+// set the dimensions of the canvas
+var margin = {top: 100, right: 25, bottom: 70, left: 40},
+    width = 1800 - margin.left - margin.right,
+    height = 700 - margin.top - margin.bottom;
+
+
+
+// set the ranges
+var x = d3.scale.ordinal().rangeRoundBands([0, width], 0.5);
+
+var y = d3.scale.linear().range([height, 0]);
+
+// define the axis
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom")
+
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left")
+    .ticks(10);
+
+
+// add the SVG element
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", 
+          "translate(" + margin.left + "," + margin.top + ")");
+
+
+// load the data
+d3.json("output/FoodgrainsVsProduction.json", function(error, data) {
+
+  data.sort(function(a,b)
+  {
+  return b.value-a.value;
+  });
+  data.forEach(function(d) {
+    d.Particulars = d.Particulars;
+    d.value = +d.value;       // try removing the + and see what the console prints
+    console.log(d.value);   // use console.log to confirm
+  });
+  // scale the range of the data
+  x.domain(data.map(function(d) { return d.Particulars; }));
+  y.domain([0, d3.max(data, function(d) { return d.value; })]);
+
+  // add axis
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+    .selectAll("text")
+      .style("text-anchor", "end")
+      .attr("dx", "-.8em")
+      .attr("dy", "-.55em")
+      .attr("transform", "rotate(-90)" );
+       
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 5)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("value");
+
+
+  // Add bar chart
+  svg.selectAll("bar")
+      .data(data)
+    .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", function(d) { return x(d.Particulars); })
+      .attr("width", x.rangeBand())
+      .attr("y", function(d) { return y(d.value); })
+      .attr("height", function(d) { return height - y(d.value); });
+
+
+      svg.selectAll("text.bar")
+  .data(data)
+.enter().append("text")
+  .attr("class", "bar")
+  .attr("text-anchor", "middle")
+  .attr("x", function(d) { return x(d.Particulars); })
+  .attr("y", function(d) { return y(d.value) - 10; })
+  .text(function(d) { return d.value; });
+
+});
+</script>
+</div>
+
+
+
+
+
+<div id="commercial">
+<h1>Aggregated all Commercial Crops and Plotted the Aggregated Value vs Year</h1>
+ 
+<script src="http://d3js.org/d3.v3.min.js"></script>
+
+<script>
+// set the dimensions of the canvas
+
+var margin = {top: 100, right: 20, bottom: 70, left: 40},
+    width = 3000- margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+
+// set the ranges
+var x = d3.scale.ordinal().rangeRoundBands([0, width], 0.5);
+
+var y = d3.scale.linear().range([height, 0]);
+
+// define the axis
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom")
+
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left")
+    .ticks(10);
+
+
+// add the SVG element
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", 
+          "translate(" + margin.left + "," + margin.top + ")");
+
+
+// load the data
+d3.json("output/AggregateCommercialCropsVsYear.json", function(error, data) {
+
+    data.forEach(function(d) {
+        d.year = d.year;
+        d.value = +d.value;
+    });
+  
+  // scale the range of the data
+  x.domain(data.map(function(d) { return d.year; }));
+  y.domain([0, d3.max(data, function(d) { return d.value; })]);
+
+  // add axis
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+    .selectAll("text")
+      .style("text-anchor", "end")
+      .attr("dx", "-.8em")
+      .attr("dy", "-.55em")
+      .attr("transform", "rotate(-90)" );
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 5)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Frequency");
+
+
+  // Add bar chart
+  svg.selectAll("bar")
+      .data(data)
+    .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", function(d) { return x(d.year); })
+      .attr("width", x.rangeBand())
+      .attr("y", function(d) { return y(d.value); })
+      .attr("height", function(d) { return height - y(d.value); });
+
+
+         svg.selectAll("text.bar")
+  .data(data)
+.enter().append("text")
+  .attr("class", "bar")
+  .attr("text-anchor", "middle")
+  .attr("x", function(d) { return x(d.year); })
+  .attr("y", function(d) { return y(d.value) - 10; })
+  .text(function(d) { return d.value; });
+
+});
+
+</script>
+</div>
+
+
+<div>
+<h1>Stacked chart of rice production in the 4 southern states</h1>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+
+<script>
+
+
+ var margin={top:40, bottom:100, left:150, right:90},
+    width=1000-margin.left-margin.right,
+    height=600-margin.top-margin.bottom;
+
+  var horizontal=d3.scale.ordinal().rangeRoundBands([0,width],0.12),
+    vertical=d3.scale.linear().rangeRound([height,0]);
+
+  var color = d3.scale.category20();
+
+  var xAxis=d3.svg.axis()
+    .scale(horizontal)
+    .orient("bottom");
+
+  var yAxis=d3.svg.axis()
+    .scale(vertical)
+    .orient("left");
+
+  var svg=d3.select("body").append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform",
+        "translate(" + margin.left + "," + margin.top + ")");
+
+  d3.json("output/RiceProductionOfSouthernStates.json",function(err,data){
+  data.forEach(function(d){
+    d.year=d.year;
+    d.Andhra_Pradesh=d["Andhra Pradesh"];
+    d.Karnataka=d.Karnataka;
+    d.Kerala=d.Kerala;
+    d.Tamil_Nadu=d["Tamil Nadu"];
+  });
+  var xData=["Andhra_Pradesh","Karnataka","Kerala","Tamil Nadu"];
+  var dataIntermediate = xData.map(function (c) {
+        return data.map(function (d) {
+            return {x: d.year, y: d[c]};
+        });
+    });
+  var dataStackLayout = d3.layout.stack()(dataIntermediate);
+
+  horizontal.domain(dataStackLayout[0].map(function (d) {
+        return d.x;
+    }));
+  vertical.domain([0,
+        d3.max(dataStackLayout[dataStackLayout.length - 1],
+                  function (d) { return d.y0 + d.y;})
+      ])
+      .nice();
+  var layer = svg.selectAll(".stack")
+          .data(dataStackLayout)
+          .enter().append("g")
+          .attr("class", "stack")
+          .style("fill", function (d, i) {
+                return color(i);
+    });
+
+  layer.selectAll("rect")
+        .data(function (d) {
+            return d;
+        })
+        .enter().append("rect")
+        .attr("x", function (d) {
+            return horizontal(d.x);
+          })
+          .attr("y", function (d) {
+              return vertical(d.y + d.y0);
+          })
+          .attr("height", function (d) {
+              return vertical(d.y0) - vertical(d.y + d.y0);
+        })
+      .attr("width", horizontal.rangeBand());
+
+  svg.append("g")
+      .attr("class", "axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+      .append("text")
+       .attr("transform", "translate(" + width + ",0)")
+       .attr("dy","1.3em")
+       .attr("dx","1.2em")
+       .style("font-size","15px")
+       .style("font-weight","bold")
+       .style("color","red")
+       .text("year");
+
+  svg.append("g")
+    .attr("class", "axis")
+    .call(yAxis)
+    .append("text")
+       .attr("transform", "rotate(-90)")
+       .attr("dy","1em")
+       .style("text-anchor", "end")
+       .style("font-size","12px")
+       .style("font-weight","bold")
+       .style("color","red")
+       .text("Karnataka,Andhra Pradesh,Kerala,Tamil Nadu");
+
+       var legend = svg.selectAll(".legend")
+         .data(color.domain().slice().reverse())
+       .enter().append("g")
+         .attr("class", "legend")
+         .attr("transform", function(d, i) { return "translate(0," + i * 20 +
+  ")"; });
+
+
+     legend.append("rect")
+         .attr("x", width - 18)
+         .attr("width", 18)
+         .attr("height", 18)
+         .style("fill", color);
+
+     legend.append("text")
+         .attr("x", width - 24)
+         .attr("y", 9)
+         .attr("dy", ".35em")
+         .style("text-anchor", "end")
+         .style("fill","red")
+         .text(function(d,i) { return xData[i]; });
+
+  });
+</script> 
+</body>
+</head>
+</html>
